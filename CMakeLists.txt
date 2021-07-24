@@ -41,16 +41,6 @@ if(NOT Drogon_FOUND)
 	FetchContent_MakeAvailable(drogon_git)
 endif()
 
-#if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
-#	if(NOT Drogon_FOUND)
-#		target_compile_options(trantor PRIVATE "-Wno-unused-parameter")
-#	endif()
-#
-#	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-#		set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-Wall -Wextra")
-#	endif()
-#endif()
-
 if(Drogon_FOUND)
 	target_link_libraries(${PROJECT_NAME} PRIVATE ${DROGON_LIBRARIES})
 else()
