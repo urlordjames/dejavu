@@ -50,7 +50,7 @@ function animate() {
 canvas.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - player.position.y, event.clientX - player.position.x);
     const velocity = {x: Math.cos(angle), y: Math.sin(angle)};
-    projectiles.push(new Projectile(player.position, 6, "blue", velocity));
+    projectiles.push(new Projectile({x: player.position.x, y: player.position.y}, 6, "blue", velocity));
 });
 
 animate();
