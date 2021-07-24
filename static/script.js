@@ -2,6 +2,7 @@ let canvas = document.getElementById('pengis');
 let ctx = canvas.getContext('2d');
 canvas.style.background = "#222";
 
+const PLAYER_SPEED = 2;
 const PROJECTILE_SPEED = 5;
 
 class Player {
@@ -18,16 +19,16 @@ class Player {
     }
     move() {
         if (keys[87]) {
-            player.position.y -= 1;
+            player.position.y -= PLAYER_SPEED;
         }
         if (keys[65]) {
-            player.position.x -= 1;
+            player.position.x -= PLAYER_SPEED;
         }
         if (keys[83]) {
-            player.position.y += 1;
+            player.position.y += PLAYER_SPEED;
         }
         if (keys[68]) {
-            player.position.x += 1;
+            player.position.x += PLAYER_SPEED;
         }
     }
     update() {
