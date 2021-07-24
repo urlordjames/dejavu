@@ -30,8 +30,15 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 	}
 
 	if (m["type"] == "relay") {
-		wsConnPtr->send("imagine I'm sending this to other players or something idfk");
-		wsConnPtr->send(m["msg"].asString());
+		players_mutex.lock();
+
+		for (auto player : players) {
+			if (wsConnPtr != player) {
+				player->send(m["msg"].asString());
+			}
+		}
+
+		players_mutex.unlock();
 	} else {
 		Json::Value error;
 		error["type"] = "error";
