@@ -36,3 +36,6 @@ build
 
 # nix-build output
 result
+
+# vim temporary stuff
+*.swp
