@@ -64,9 +64,11 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 		message["pos"] = coords;
 		message["msg"] = note.get_message();
 
+		players_mutex.lock();
 		for (auto player : players) {
 			player->send(stringify(message));
 		}
+		players_mutex.unlock();
 	} else {
 		Json::Value error;
 		error["type"] = "error";
