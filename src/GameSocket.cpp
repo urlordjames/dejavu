@@ -1,9 +1,13 @@
 #include "GameSocket.h"
 #include "PlayerInfo.h"
+#include "PlayerNote.h"
 #include "Utils.h"
 
 std::unordered_set<WebSocketConnectionPtr> players;
 std::mutex players_mutex;
+
+std::unordered_set<std::shared_ptr<PlayerNote>> player_notes;
+std::mutex notes_mutex;
 
 Json::CharReader *reader = Json::CharReaderBuilder().newCharReader();
 
@@ -44,6 +48,25 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 		}
 
 		players_mutex.unlock();
+	} else if (m["type"] == "note") {
+		PlayerNote note(m["x"].asInt(), m["y"].asInt(), m["msg"].asString());
+
+		notes_mutex.lock();
+		player_notes.insert(std::make_shared<PlayerNote>(note));
+		notes_mutex.unlock();
+
+		Json::Value coords;
+		coords["x"] = note.get_x();
+		coords["y"] = note.get_y();
+
+		Json::Value message;
+		message["type"] = "note";
+		message["pos"] = coords;
+		message["msg"] = note.get_message();
+
+		for (auto player : players) {
+			player->send(stringify(message));
+		}
 	} else {
 		Json::Value error;
 		error["type"] = "error";
