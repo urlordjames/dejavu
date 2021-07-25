@@ -11,6 +11,19 @@ std::mutex notes_mutex;
 
 Json::CharReader *reader = Json::CharReaderBuilder().newCharReader();
 
+Json::Value note_jsonify(PlayerNote &note) {
+	Json::Value coords;
+	coords["x"] = note.get_x();
+	coords["y"] = note.get_y();
+
+	Json::Value message;
+	message["type"] = "note";
+	message["pos"] = coords;
+	message["msg"] = note.get_message();
+
+	return message;
+}
+
 void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::string &&message, const WebSocketMessageType &type) {
 	// ignore heartbeat and binary messages
 	if (type != WebSocketMessageType::Text) return;
@@ -55,14 +68,7 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 		player_notes.insert(std::make_shared<PlayerNote>(note));
 		notes_mutex.unlock();
 
-		Json::Value coords;
-		coords["x"] = note.get_x();
-		coords["y"] = note.get_y();
-
-		Json::Value message;
-		message["type"] = "note";
-		message["pos"] = coords;
-		message["msg"] = note.get_message();
+		Json::Value message = note_jsonify(note);
 
 		players_mutex.lock();
 		for (auto player : players) {
@@ -84,6 +90,13 @@ void GameSocket::handleNewConnection(const HttpRequestPtr &req,const WebSocketCo
 	players_mutex.lock();
 	players.insert(wsConnPtr);
 	players_mutex.unlock();
+
+	notes_mutex.lock();
+	for (auto note : player_notes) {
+		Json::Value msg = note_jsonify(*note);
+		wsConnPtr->send(stringify(msg));
+	}
+	notes_mutex.unlock();
 }
 
 void GameSocket::handleConnectionClosed(const WebSocketConnectionPtr& wsConnPtr) {
