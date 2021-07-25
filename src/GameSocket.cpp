@@ -29,12 +29,17 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 		return;
 	}
 
-	if (m["type"] == "relay") {
+	if (m["type"] == "pos") {
+		auto sender_info = wsConnPtr->getContext<PlayerInfo>();
 		players_mutex.lock();
 
 		for (auto player : players) {
 			if (wsConnPtr != player) {
-				player->send(m["msg"].asString());
+				Json::Value message;
+				message["type"] = "pos";
+				message["uuid"] = sender_info->get_uuid();
+				message["pos"] = m["pos"];
+				player->send(stringify(message));
 			}
 		}
 
@@ -49,7 +54,6 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 
 void GameSocket::handleNewConnection(const HttpRequestPtr &req,const WebSocketConnectionPtr& wsConnPtr) {
 	auto info = std::make_shared<PlayerInfo>();
-	info->set_uuid(drogon::utils::getUuid());
 	wsConnPtr->setContext(info);
 
 	players_mutex.lock();
