@@ -94,9 +94,10 @@ class Projectile {
 }
 
 class Note {
-    constructor(position, message) {
+    constructor(position, message, id) {
         this.position = position
         this.message = message;
+        this.id = id;
     }
 
     draw() {
@@ -141,7 +142,7 @@ ws.onmessage = function (e) {
     } else if (data["type"] == "leave") {
         delete other_players[data["uuid"]];
     } else if (data["type"] == "note") {
-        notes.push(new Note(data["pos"], data["msg"]));
+        notes.push(new Note(data["pos"], data["msg"], data["id"]));
     }
 };
 
@@ -166,7 +167,7 @@ window.addEventListener("keydown", (event) => {
                 // server treats as int, may as well save the bandwidth
                 "x": Math.floor(player.position.x),
                 "y": Math.floor(player.position.y),
-                "msg": "apple"
+                "msg": prompt("type a note to share, keep in mind these are immutable after creation")
             }));
         } else {
             alert("failed to send note");

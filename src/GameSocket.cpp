@@ -19,6 +19,7 @@ Json::Value note_jsonify(PlayerNote &note) {
 	Json::Value message;
 	message["type"] = "note";
 	message["pos"] = coords;
+	message["id"] = note.get_id();
 	message["msg"] = note.get_message();
 
 	return message;
