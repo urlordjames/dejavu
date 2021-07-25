@@ -1,4 +1,12 @@
 let canvas = document.getElementById('pengis');
+
+function resize_to_screen() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.onresize = resize_to_screen;
+resize_to_screen();
+
 let ctx = canvas.getContext('2d');
 canvas.style.background = "#1E212B";
 
