@@ -137,10 +137,14 @@ ws.onmessage = function (e) {
     }
 };
 
+const music = document.getElementById("music");
+//music.load();
+
 canvas.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - player.position.y, event.clientX - player.position.x);
     const velocity = {x: Math.cos(angle) * 5, y: Math.sin(angle) * 5};
     projectiles.push(new Projectile({x: player.position.x, y: player.position.y}, 6, "#FFA", velocity));
+    music.play();
 });
 
 window.addEventListener("keydown", (event) => {

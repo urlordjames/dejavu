@@ -8,5 +8,9 @@ int main() {
 	// explicit string conversion required, doesn't compile on Windows otherwise
 	drogon::app().setUploadPath(upload_path.string());
 
+	// set file types drogon will send
+	std::vector<std::string> types({"html", "js", "ogg"});
+	drogon::app().setFileTypes(types);
+
 	drogon::app().addListener("0.0.0.0", 8080).run();
 }
