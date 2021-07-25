@@ -99,8 +99,10 @@ function animate() {
 ws.onmessage = function (e) {
     const data = JSON.parse(e.data);
 
-    if (data["type"] = "pos") {
+    if (data["type"] == "pos") {
         other_players[data["uuid"]] = new Player(data["pos"], 12, "green");
+    } else if (data["type"] == "leave") {
+        delete other_players[data["uuid"]];
     }
 };
 

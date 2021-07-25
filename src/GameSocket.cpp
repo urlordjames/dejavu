@@ -64,7 +64,17 @@ void GameSocket::handleNewConnection(const HttpRequestPtr &req,const WebSocketCo
 void GameSocket::handleConnectionClosed(const WebSocketConnectionPtr& wsConnPtr) {
 	std::cout << "someone left smh" << std::endl;
 
+	Json::Value message;
+	message["type"] = "leave";
+	message["uuid"] = wsConnPtr->getContext<PlayerInfo>()->get_uuid();
+	std::string leave_msg = stringify(message);
+
 	players_mutex.lock();
+
 	players.erase(wsConnPtr);
+	for (auto player : players) {
+		player->send(leave_msg);
+	}
+
 	players_mutex.unlock();
 }
