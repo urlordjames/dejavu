@@ -79,12 +79,14 @@ class Projectile {
         this.radius = radius;
         this.color = color;
         this.velocity = velocity;
+        this.lifetime = 500;
     }
     draw() {
         ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, 2*Math.PI);
         ctx.fill();
+        this.lifetime -= 1;
     }
     update() {
         this.position.x += this.velocity.x;
@@ -127,7 +129,10 @@ function animate() {
 
     player.update();
 
-    projectiles.forEach((projectile) => {
+    projectiles.forEach((projectile, i) => {
+        if (projectile.lifetime <= 0) {
+            projectiles.splice(i, 1);
+        }
         projectile.update();
     });
 
