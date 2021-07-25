@@ -1,6 +1,6 @@
 let canvas = document.getElementById('pengis');
 let ctx = canvas.getContext('2d');
-canvas.style.background = "#222";
+canvas.style.background = "#1E212B";
 
 // TODO: deploy server
 const ws = new WebSocket("ws://127.0.0.1:8080/game");
@@ -86,7 +86,7 @@ class Projectile {
 }
 
 const keys = [];
-const player = new Player({x: canvas.width/2, y: canvas.height/2}, 12, "red");
+const player = new Player({x: canvas.width/2, y: canvas.height/2}, 12, "#1985A1");
 const projectiles = [];
 let other_players = {};
 
@@ -118,7 +118,7 @@ ws.onmessage = function (e) {
 canvas.addEventListener("click", (event) => {
     const angle = Math.atan2(event.clientY - player.position.y, event.clientX - player.position.x);
     const velocity = {x: Math.cos(angle) * 5, y: Math.sin(angle) * 5};
-    projectiles.push(new Projectile({x: player.position.x, y: player.position.y}, 6, "blue", velocity));
+    projectiles.push(new Projectile({x: player.position.x, y: player.position.y}, 6, "#FFA", velocity));
 });
 
 window.addEventListener("keydown", (event) => {
