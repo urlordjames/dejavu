@@ -112,14 +112,14 @@ function animate() {
         note.draw();
     });
 
+    Object.values(other_players).forEach((other_player) => {
+        other_player.draw();
+    });
+
     player.update();
 
     projectiles.forEach((projectile) => {
         projectile.update();
-    });
-
-    Object.values(other_players).forEach((other_player) => {
-        other_player.draw();
     });
 
     requestAnimationFrame(animate);
