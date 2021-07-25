@@ -85,13 +85,33 @@ class Projectile {
     }
 }
 
+class Note {
+    constructor(position, message) {
+        this.position = position
+        this.message = message;
+    }
+
+    draw() {
+        ctx.fillStyle = "#FFC800";
+        ctx.beginPath();
+        ctx.arc(this.position.x, this.position.y, 10, 0, 2*Math.PI);
+        ctx.fill();
+    }
+}
+
 const keys = [];
 const player = new Player({x: canvas.width/2, y: canvas.height/2}, 12, "red");
 const projectiles = [];
+let notes = [];
 let other_players = {};
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    notes.forEach((note) => {
+        note.draw();
+    });
+
     player.update();
 
     projectiles.forEach((projectile) => {
@@ -112,6 +132,8 @@ ws.onmessage = function (e) {
         other_players[data["uuid"]] = new Player(data["pos"], 12, "green");
     } else if (data["type"] == "leave") {
         delete other_players[data["uuid"]];
+    } else if (data["type"] == "note") {
+        notes.push(new Note(data["pos"], data["msg"]));
     }
 };
 
@@ -123,6 +145,21 @@ canvas.addEventListener("click", (event) => {
 
 window.addEventListener("keydown", (event) => {
     keys[event.keyCode] = true;
+
+    if (event.keyCode == 69) {
+        // TODO: check gold
+        if (ws.readyState == 1) {
+            ws.send(JSON.stringify({
+                "type": "note",
+                // server treats as int, may as well save the bandwidth
+                "x": Math.floor(player.position.x),
+                "y": Math.floor(player.position.y),
+                "msg": "apple"
+            }));
+        } else {
+            alert("failed to send note");
+        }
+    }
 })
 window.addEventListener("keyup", (event) => {
     delete keys[event.keyCode];

@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
 	src/PlayerInfo.h
 	src/Utils.cpp
 	src/Utils.h
+	src/PlayerNote.cpp
+	src/PlayerNote.h
 )
 
 add_executable(${PROJECT_NAME}
