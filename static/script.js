@@ -121,6 +121,15 @@ function animate() {
 
     notes.forEach((note) => {
         note.draw();
+        projectiles.forEach((projectile, i) => {
+            let delta_x = note.position.x - projectile.position.x;
+            let delta_y = note.position.y - projectile.position.y;
+            let dist = Math.sqrt(delta_x**2 + delta_y**2);
+            if (dist < 15) {
+                alert("the note reads:\n" + note.message);
+                projectiles.splice(i, 1);
+            }
+        });
     });
 
     Object.values(other_players).forEach((other_player) => {
@@ -132,6 +141,7 @@ function animate() {
     projectiles.forEach((projectile, i) => {
         if (projectile.lifetime <= 0) {
             projectiles.splice(i, 1);
+            return;
         }
         projectile.update();
     });
