@@ -10,6 +10,7 @@ class Player {
         this.position = position;
         this.radius = radius;
         this.color = color;
+        this.velocity = {x: 0, y: 0};
     }
     draw() {
         ctx.fillStyle = this.color;
@@ -18,18 +19,27 @@ class Player {
         ctx.fill();
     }
     move() {
+        this.velocity.x = 0;
+        this.velocity.y = 0;
         if (keys[87]) {
-            player.position.y -= PLAYER_SPEED;
+            this.velocity.y -= 1;
         }
         if (keys[65]) {
-            player.position.x -= PLAYER_SPEED;
+            this.velocity.x -= 1;
         }
         if (keys[83]) {
-            player.position.y += PLAYER_SPEED;
+            this.velocity.y += 1;
         }
         if (keys[68]) {
-            player.position.x += PLAYER_SPEED;
+            this.velocity.x += 1;
         }
+        let magnitude = Math.sqrt(this.velocity.x**2 + this.velocity.y**2);
+        if (magnitude != 0) {
+            this.velocity.x = this.velocity.x / magnitude * PLAYER_SPEED;
+            this.velocity.y = this.velocity.y / magnitude * PLAYER_SPEED;
+        }
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
     }
     update() {
         this.move();
