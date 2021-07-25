@@ -76,6 +76,17 @@ void GameSocket::handleNewMessage(const WebSocketConnectionPtr& wsConnPtr, std::
 			player->send(stringify(message));
 		}
 		players_mutex.unlock();
+	} else if (m["type"] == "del") {
+		// I humbly request you do not use this without good reason if you've stumbled upon the source code somehow
+		int id = m["id"].asInt();
+
+		notes_mutex.lock();
+		auto bad_note = std::find_if(player_notes.begin(), player_notes.end(), [id] (auto note) -> bool {
+			return note->get_id() == id;
+		});
+		std::cout << "NOTE DELETED:\n" << (**bad_note).get_message() << std::endl;
+		player_notes.erase(bad_note);
+		notes_mutex.unlock();
 	} else {
 		Json::Value error;
 		error["type"] = "error";
